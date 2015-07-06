@@ -34212,11 +34212,12 @@ begin
     DoGetText(lEventArgs);
 
     // Paint the normal text first...
-    if not lEventArgs.CellText.IsEmpty then
+    if {$if CompilerVersion < 24} (lEventArgs.CellText <> '') {$else} not lEventArgs.CellText.IsEmpty {$ifend} then
       PaintNormalText(PaintInfo, TextOutFlags, lEventArgs.CellText);
 
     // ... and afterwards the static text if not centered and the node is not multiline enabled.
-    if (Alignment <> taCenter) and not (vsMultiline in PaintInfo.Node.States) and (toShowStaticText in TreeOptions.FStringOptions) and not lEventArgs.StaticText.IsEmpty then
+    if (Alignment <> taCenter) and not (vsMultiline in PaintInfo.Node.States) and (toShowStaticText in TreeOptions.FStringOptions) and
+      {$if CompilerVersion < 24} (lEventArgs.StaticText <> '') {$else} not lEventArgs.StaticText.IsEmpty {$ifend} then
       PaintStaticText(PaintInfo, TextOutFlags, lEventArgs.StaticText);
   finally
     RestoreFontChangeEvent(PaintInfo.Canvas);
